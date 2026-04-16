@@ -1,0 +1,94 @@
+{% extends 'blog/asosiy.html' %}
+
+{% block sarlavha %}Profilni Tahrirlash{% endblock %}
+
+{% block kontent %}
+    <div class="form-container">
+        <h2>✏️ Profilni Tahrirlash</h2>
+
+        {% if profil.rasm or profil.cover_rasm %}
+            <div style="margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                {% if profil.rasm %}
+                    <div style="text-align: center;">
+                        <h4 style="color: var(--text-soft); margin-bottom: 15px;">Hozirgi Profil Rasmi</h4>
+                        <img src="{{ profil.rasm.url }}" alt="Profil rasmi" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;">
+                    </div>
+                {% endif %}
+
+                {% if profil.cover_rasm %}
+                    <div style="text-align: center;">
+                        <h4 style="color: var(--text-soft); margin-bottom: 15px;">Hozirgi Cover Rasm</h4>
+                        <img src="{{ profil.cover_rasm.url }}" alt="Cover rasm" style="max-width: 100%; border-radius: 12px; max-height: 200px; object-fit: cover;">
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <fieldset style="border: none; padding: 0;">
+                <legend style="font-size: 1.3rem; margin-bottom: 20px; color: var(--primary);">👤 Foydalanuvchi Ma'lumotlari</legend>
+
+                <div class="form-group">
+                    <label for="{{ f_forma.username.id_for_label }}">👤 Foydalanuvchi nomi:</label>
+                    {{ f_forma.username }}
+                    {% if f_forma.username.errors %}
+                        <div class="alert alert-error mt-2">{{ f_forma.username.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ f_forma.email.id_for_label }}">📧 Email:</label>
+                    {{ f_forma.email }}
+                    {% if f_forma.email.errors %}
+                        <div class="alert alert-error mt-2">{{ f_forma.email.errors }}</div>
+                    {% endif %}
+                </div>
+            </fieldset>
+
+            <fieldset style="border: none; padding: 0; margin-top: 30px;">
+                <legend style="font-size: 1.3rem; margin-bottom: 20px; color: var(--primary);">📋 Profil Ma'lumotlari</legend>
+
+                <div class="form-group">
+                    <label for="{{ p_forma.ism.id_for_label }}">👤 To'liq Ismingiz:</label>
+                    {{ p_forma.ism }}
+                    {% if p_forma.ism.errors %}
+                        <div class="alert alert-error mt-2">{{ p_forma.ism.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ p_forma.bio.id_for_label }}">✨ Bio:</label>
+                    {{ p_forma.bio }}
+                    {% if p_forma.bio.errors %}
+                        <div class="alert alert-error mt-2">{{ p_forma.bio.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ p_forma.rasm.id_for_label }}">📷 Profil Rasmi:</label>
+                    {{ p_forma.rasm }}
+                    <small class="form-text">JPG, PNG, GIF formatlarida. Maksimal 5MB.</small>
+                    {% if p_forma.rasm.errors %}
+                        <div class="alert alert-error mt-2">{{ p_forma.rasm.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ p_forma.cover_rasm.id_for_label }}">🖼️ Cover Rasm:</label>
+                    {{ p_forma.cover_rasm }}
+                    <small class="form-text">JPG, PNG, GIF formatlarida. Maksimal 5MB.</small>
+                    {% if p_forma.cover_rasm.errors %}
+                        <div class="alert alert-error mt-2">{{ p_forma.cover_rasm.errors }}</div>
+                    {% endif %}
+                </div>
+            </fieldset>
+
+            <div style="display: flex; gap: 12px; margin-top: 30px;">
+                <button type="submit" class="btn-form" style="flex: 1;">💾 Saqlash</button>
+                <a href="{% url 'profil' user.username %}" class="btn-form btn-secondary" style="flex: 1; text-decoration: none; text-align: center; line-height: 50px;">❌ Bekor Qilish</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Sayt</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
+</head>
+<body>
+
+    <div class="header">
+        <h1>🌟 Mening Blog Saytim</h1>
+        <p>Eng so‘nggi postlar, rasmlar va qiziqarli kontent</p>
+    </div>
+
+    <div class="menu">
+        <a href="{% url 'bosh_sahifa' %}">🏠 Bosh sahifa</a>
+        <a href="{% url 'biz_haqimizda' %}">ℹ Biz haqimizda</a>
+        <a href="{% url 'aloqa' %}">📞 Aloqa</a>
+
+        {% if user.is_authenticated %}
+            <a href="#">👤 {{ user.username }}</a>
+            <a href="{% url 'chiqish' %}">🚪 Chiqish</a>
+        {% else %}
+            <a href="{% url 'kirish' %}">🔐 Kirish</a>
+            <a href="{% url 'royxatdan_otish' %}">📝 Ro‘yxatdan o‘tish</a>
+        {% endif %}
+    </div>
+
+    <div class="content">
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block kontent %}
+        {% endblock %}
+
+    </div>
+
+</body>
+</html>

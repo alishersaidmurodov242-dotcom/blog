@@ -1,0 +1,29 @@
+{% extends 'blog/asosiy.html' %}
+
+{% block sarlavha %}Kirish{% endblock %}
+
+{% block kontent %}
+    <div class="form-container">
+        <h2>🔐 Tizimga Kirish</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Foydalanuvchi nomi:</label>
+                <input type="text" name="username" id="username" class="form-control form-control-lg" placeholder="Foydalanuvchi nomingizni kiriting" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Parol:</label>
+                <input type="password" name="password" id="password" class="form-control form-control-lg" placeholder="Parolingizni kiriting" required>
+            </div>
+
+            <button type="submit" class="btn-form w-100">🚀 Kirish</button>
+        </form>
+
+        <div class="form-footer">
+            <p>Hisobingiz yo'qmi? <a href="{% url 'royxatdan_otish' %}">Ro'yxatdan o'ting</a></p>
+        </div>
+    </div>
+{% endblock %}

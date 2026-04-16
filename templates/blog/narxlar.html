@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            min-height:100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a, #7c3aed);
+            background-size:400% 400%;
+            animation: gradientMove 12s ease infinite;
+            display:flex; justify-content:center; align-items:center;
+            color:white; overflow:hidden;
+        }
+        @keyframes gradientMove {
+            0% { background-position:0% 50%; }
+            50% { background-position:100% 50%; }
+            100% { background-position:0% 50%; }
+        }
+        .container {
+            width:90%; max-width:900px; text-align:center;
+            padding:50px 35px; border-radius:25px;
+            background:rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            box-shadow:0 20px 60px rgba(0,0,0,0.35);
+        }
+        h1 {
+            font-size:52px; margin-bottom:20px; font-weight:800;
+            text-shadow:0 0 20px rgba(255,255,255,0.35);
+        }
+        .subtitle {
+            font-size:24px; margin-bottom:25px;
+            color:#e0e7ff; line-height:1.7;
+        }
+        .quote {
+            margin-top:25px; font-size:20px; font-style:italic;
+            color:#fef3c7; line-height:1.8;
+        }
+        .btn {
+            display:inline-block; margin-top:35px; padding:15px 32px;
+            font-size:18px; font-weight:bold; color:white; text-decoration:none;
+            border-radius:50px; background:linear-gradient(90deg, #06b6d4, #3b82f6);
+            box-shadow:0 10px 25px rgba(59,130,246,0.35);
+            transition:0.3s ease;
+        }
+        .btn:hover { transform:scale(1.06); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ title }}</h1>
+        <p class="subtitle">{{ message }}</p>
+        <p class="quote">{{ quote }}</p>
+        <a href="/narxlar/" class="btn">Xizmatlarni Ko‘rish 🚀</a>
+    </div>
+</body>
+</html>

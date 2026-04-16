@@ -1,0 +1,28 @@
+{% extends 'blog/asosiy.html' %}
+
+{% block sarlavha %}Reels{% endblock %}
+
+{% block kontent %}
+<div class="reels-container">
+    {% for reel in reels %}
+        <div class="reel-card">
+            <video controls autoplay muted loop>
+                <source src="{{ reel.video.url }}" type="video/mp4">
+                Sizning brauzeringiz videoni qo‘llab-quvvatlamaydi.
+            </video>
+
+            <div class="reel-info">
+                <h3>@{{ reel.user.username }}</h3>
+                <p>{{ reel.caption }}</p>
+                <p>❤️ {{ reel.likes_count }}</p>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'like_reel' reel.id %}" class="like-btn">❤️ Like</a>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>Hozircha hech qanday reel yo‘q.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'blog/asosiy.html' %}
+
+{% block sarlavha %}Postni O'chirish{% endblock %}
+
+{% block kontent %}
+    <div class="delete-confirm">
+        <h2>⚠️ Ogohlik!</h2>
+        <p>Siz haqiqatan ham bu postni o'chirmoqchimisiz?</p>
+
+        <div class="post-card">
+            <h3>{{ post.sarlavha }}</h3>
+            <p>{{ post.matn|truncatewords:30 }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+                🗑️ Ha, O'chirish
+            </button>
+            <a href="{% url 'post_batafsil' post.id %}" class="btn btn-secondary">
+                ❌ Yo'q, Bekor Qilish
+            </a>
+        </form>
+    </div>
+{% endblock %}

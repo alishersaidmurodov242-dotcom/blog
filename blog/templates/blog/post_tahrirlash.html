@@ -1,0 +1,60 @@
+{% extends 'blog/asosiy.html' %}
+
+{% block sarlavha %}Postni Tahrirlash{% endblock %}
+
+{% block kontent %}
+    <div class="form-container">
+        <h2>✏️ Postni Tahrirlash</h2>
+        <p style="color: var(--text-soft); margin-bottom: 25px;"><strong>Tahrirlayotgan post:</strong> {{ post.sarlavha }}</p>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ forma.sarlavha.id_for_label }}">📝 Sarlavha:</label>
+                {{ forma.sarlavha }}
+                {% if forma.sarlavha.errors %}
+                    <div class="alert alert-error mt-2">{{ forma.sarlavha.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ forma.matn.id_for_label }}">✍️ Matn:</label>
+                {{ forma.matn }}
+                {% if forma.matn.errors %}
+                    <div class="alert alert-error mt-2">{{ forma.matn.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ forma.kategoriya.id_for_label }}">🏷️ Kategoriya:</label>
+                {{ forma.kategoriya }}
+                {% if forma.kategoriya.errors %}
+                    <div class="alert alert-error mt-2">{{ forma.kategoriya.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ forma.rasm.id_for_label }}">📷 Asosiy Rasm:</label>
+                {{ forma.rasm }}
+                {% if forma.rasm.errors %}
+                    <div class="alert alert-error mt-2">{{ forma.rasm.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ forma.nashr_etilgan.id_for_label }}" class="form-check-label">
+                    <div class="form-check">
+                        {{ forma.nashr_etilgan }}
+                        🚀 Nashr etilgan
+                    </div>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 30px;">
+                <button type="submit" class="btn-form" style="flex: 1;">💾 Saqlash</button>
+                <a href="{% url 'post_batafsil' post.id %}" class="btn-form btn-secondary" style="flex: 1; text-decoration: none; text-align: center; line-height: 50px;">❌ Bekor Qilish</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'blog/asosiy.html' %}
+
+{% block sarlavha %}Yangi Reel{% endblock %}
+
+{% block kontent %}
+<div class="form-container">
+    <h2>🎬 Yangi Reel Joylash</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="alert alert-error mt-2">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn-form w-100">📤 Joylash</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'blog/bosh.html' %}
+
+{% block title %}Galereya - Barcha Rasmlar{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">🖼️ Galereya</h1>
+    <div class="gallery-container">
+        {% for post_rasm in post_rasmlar %}
+        <div class="gallery-item">
+            <img src="{{ post_rasm.rasm.url }}" alt="Post rasmi">
+            <div class="card-body">
+                <h6>{{ post_rasm.post.sarlavha|truncatechars:30 }}</h6>
+                <p>{{ post_rasm.post.muallif.username }} • {{ post_rasm.post.yaratilgan_sana|date:"d.m.Y" }}</p>
+                <a href="{% url 'post_batafsil' post_rasm.post.id %}" class="btn">Postni ko'rish</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Hozircha post rasmlari yo'q.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Profil Rasmlari -->
+    <h2 class="mb-3 mt-5">👤 Profil Rasmlari</h2>
+    <div class="gallery-container">
+        {% for profil in profil_rasmlar %}
+        <div class="gallery-item">
+            <img src="{{ profil.rasm.url }}" alt="Profil rasmi" style="border-radius: 50%; width: 200px; height: 200px; margin: 0 auto; display: block;">
+            <div class="card-body text-center">
+                <h6>{{ profil.foydalanuvchi__username }}</h6>
+                <a href="{% url 'profil' profil.foydalanuvchi__username %}" class="btn">Profilni ko'rish</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Hozircha profil rasmlari yo'q.</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Cover Rasmlari -->
+    <h2 class="mb-3 mt-5">🖼️ Cover Rasmlari</h2>
+    <div class="gallery-container">
+        {% for profil in cover_rasmlar %}
+        <div class="gallery-item">
+            <img src="{{ profil.cover_rasm.url }}" alt="Cover rasmi" style="height: 250px;">
+            <div class="card-body">
+                <h6>{{ profil.foydalanuvchi__username }} ning cover rasmi</h6>
+                <a href="{% url 'profil' profil.foydalanuvchi__username %}" class="btn">Profilni ko'rish</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Hozircha cover rasmlari yo'q.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
