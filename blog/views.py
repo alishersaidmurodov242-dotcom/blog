@@ -4,6 +4,10 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.forms import UserChangeForm
 from django.core.paginator import Paginator
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import PostSerializer
 
 from .models import Post, Kategoriya, Izoh, Like, Reel, Profil
 from .forms import (
@@ -322,3 +326,147 @@ def galereya(request):
         'cover_rasmlar': cover_rasmlar,
     }
     return render(request, 'blog/galereya.html', context)
+
+
+def postlar(request):
+    postlar = Post.objects.all()
+    serializer = PostSerializer(postlar, many=True)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET', 'POST'])
+def post_list_api(request):
+    if request.method == 'GET':
+        # Olish
+        postlar = Post.objects.filter(nashr_etilgan=True).order_by('-yaratilgan_sana')
+        serializer = PostSerializer(postlar, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        # Yaratish
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(muallif=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def post_detail_api(request, post_id):
+    """Bitta postni olish"""
+    try:
+        post = Post.objects.get(id=post_id, nashr_etilgan=True)
+    except Post.DoesNotExist:
+        return Response(
+            {'xato': 'Post topilmadi'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # korildi sonini oshirish
+    post.korildi += 1
+    post.save()
+
+    serializer = PostSerializer(post)
+    return Response(serializer.data)
+
+@api_view(['PUT', 'PATCH'])
+def post_update_api(request, post_id):
+    """Postni yangilash"""
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response(
+            {'xato': 'Post topilmadi'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Faqat muallif yangilay oladi
+    if post.muallif != request.user:
+        return Response(
+            {'xato': 'Ruxsat yo\'q'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    serializer = PostSerializer(post, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def post_delete_api(request, post_id):
+    """Postni o'chirish"""
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response(
+            {'xato': 'Post topilmadi'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Faqat muallif o'chira oladi
+    if post.muallif != request.user:
+        return Response(
+            {'xato': 'Ruxsat yo\'q'},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    post.delete()
+    return Response(
+        {'xabar': 'Post o\'chirildi'},
+        status=status.HTTP_204_NO_CONTENT
+    )
+
+
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.decorators import action
+
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    Post lar uchun ViewSet
+    - list: Barcha postlar
+    - create: Yangi post
+    - retrieve: Bitta post
+    - update: Postni yangilash
+    - destroy: Postni o'chirish
+    """
+    queryset = Post.objects.filter(nashr_etilgan=True).order_by('-yaratilgan_sana')
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        """Yangi post yaratishda muallif ni avtomatik qo'shish"""
+        serializer.save(muallif=self.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
+        """Bitta post olishda korildi sonini oshirish"""
+        instance = self.get_object()
+        instance.korildi += 1
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def ommabop(self, request):
+        """Eng ko'p ko'rilgan postlar"""
+        postlar = Post.objects.filter(nashr_etilgan=True).order_by('-korildi')[:5]
+        serializer = self.get_serializer(postlar, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def mening_postlarim(self, request):
+        """Foydalanuvchining o'z postlari"""
+        if not request.user.is_authenticated:
+            return Response(
+                {'xato': 'Tizimga kirish kerak'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        postlar = Post.objects.filter(muallif=request.user).order_by('-yaratilgan_sana')
+        serializer = self.get_serializer(postlar, many=True)
+        return Response(serializer.data)
+    
+from django.http import HttpResponse
+
+def post_izoh(request, post_id):
+    return HttpResponse(f"Post {post_id} uchun izoh sahifasi")
